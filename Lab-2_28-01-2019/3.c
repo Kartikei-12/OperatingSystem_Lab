@@ -6,16 +6,9 @@
 
 int main()
 {
-    int pid, a;
     if(fork() == 0)
-    {
-        pid = getpid();
-        printf("Child Process\nPID: %d\n", pid);
-    }
+        printf("Child Process\nPID: %d\n", getpid());
     else
-    {
-        pid = getpid();
-        printf("\nParent Process\nPID: %d\n", pid);
-    }
+        printf("\nParent Process\nPID: %d\n", getpid());
     return 0;
 }
