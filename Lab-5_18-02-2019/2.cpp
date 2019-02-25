@@ -50,6 +50,8 @@ int main()
     int N=0, timE=0, a=0, pid=0;
     double atat=0.0, awt=0.0, alpha=0.5;
     
+    cout<<"\n\nEnter alpha: ";
+    cin>>alpha;
     cout<<"\n\nEnter number of process: ";
     cin>>N;
     Process P[N], temp;
@@ -62,7 +64,6 @@ int main()
         P[i].isCompleted = false;
     }
     
-    
     //Sort according to arrival time
     for(int i=0; i<N; ++i)
         for(int j=i; j<N; ++j)
@@ -74,9 +75,9 @@ int main()
             }
     
     //Setting predicted burst time
-    P[0].pbt = P[0].bt;
+    P[0].pbt = P[0].bt*1.0;
     for(int i=1; i<N; ++i)
-        P[i].pbt = alpha*P[i-1].bt + (1-alpha)*P[i-1].pbt;
+        P[i].pbt = alpha*(P[i-1].bt-P[i-1].pbt) + P[i-1].pbt;
     
     cout<<"\nGantt chart:\n| ";
     do
