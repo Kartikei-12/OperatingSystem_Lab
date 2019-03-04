@@ -1,7 +1,8 @@
 // @author: Kartikei Mittal
 // ID: 2017KUCP1032
-// Implemented Sortest Remaining Time First
+// Implemented Round Robin Sheduling Algorithm
 #include<iostream>
+#include<queue>
     using namespace std;
 
 class Process
@@ -20,17 +21,6 @@ public:
     }
 };
 
-int getShortestRemainingTimeProcess(Process P[], int size, int timE)
-{
-    int a = -1, min=32000;
-    for(int i=0; i<size; ++i)
-        if(P[i].rt<min && P[i].rt>0 && P[i].at<=timE)
-        {
-            a = i;
-            min = P[i].rt;
-        }
-    return a;
-}
 
 bool isProcessRemaining(Process P[], int size)
 {
@@ -42,25 +32,39 @@ bool isProcessRemaining(Process P[], int size)
 
 void showProcessTab(Process P[], int size)
 {
-    cout<<"\n\nProcess Id | AT   | BT | RT | CT | TAT   | WT   |"<<endl;
+    cout<<"\n\nProcess Id | AT  | BT | CT | TAT   | WT   |"<<endl;
     for(int i=0; i<size; ++i)
         cout<<"\t"
-            <<i+1<<"      "
-            <<P[i].at<<"    "
-            <<P[i].bt<<"     "
-            <<P[i].rt<<"   "
+            <<i+1<<"    "
+            <<P[i].at<<"     "
+            <<P[i].bt<<"    "
             <<P[i].ct<<"      "
             <<P[i].tat<<"     "
             <<P[i].wt<<"    "<<endl;
 }
 
+void loadNewProcess(
+    Process P[],
+    int size,
+    queue<int> &process_queue,
+    int time_point,
+    int timE
+) {
+    for(int i=0; i<size; ++i)
+        if(P[i].rt>0 && P[i].at>time_point && P[i].at<=timE)
+            process_queue.push(i);
+}
+
 int main()
 {
-    int N=0, timE=0, pid=0;
+    int N=0, timE=0, pid=0, time_quanta=0;
     double atat=0.0, awt=0.0;
-    
+    queue<int> process_queue;
+
     cout<<"\n\nEnter number of process: ";
     cin>>N;
+    cout<<"\nEnter time quanta: ";
+    cin>>time_quanta;
     Process P[N], temp;
     //Input
     for(int i=0; i<N; ++i)
@@ -80,22 +84,37 @@ int main()
                 P[j] = P[j+1];
                 P[j+1] = temp;
             }
-    
+    loadNewProcess(P, N, process_queue, timE-time_quanta, timE);
     cout<<"\nGantt chart:\n| ";
     do
     {
-        pid = getShortestRemainingTimeProcess(P, N, timE);
-        ++timE;
-        if(pid == -1)
-        {  
+        
+        if(!process_queue.size())
+        {
+            ++timE;
             cout<<timE<<" | ";
-            continue;
+            continue ;
         }
-        --P[pid].rt;
+        
+        pid = process_queue.front();
+        process_queue.pop();
+        
+        if(P[pid].rt < time_quanta)
+        {
+            timE += P[pid].rt;
+            P[pid].rt = 0;
+        }
+        else
+        {
+            timE += time_quanta;
+            P[pid].rt -= time_quanta;
+        }
         cout<<"P"<<pid+1<<" | ";
+        loadNewProcess(P, N, process_queue, timE-time_quanta, timE);
         if(P[pid].rt == 0)
             P[pid].ct = timE;
-        
+        else
+            process_queue.push(pid);
     }while(isProcessRemaining(P, N));
     
     //Compiling Result
