@@ -2,6 +2,7 @@
 // ID: 2017KUCP1032
 // Implemented Priority based sheduling without preemtion
 #include<iostream>
+#include<fstream>
     using namespace std;
 
 class Process
@@ -54,22 +55,39 @@ void showProcessTab(Process P[], int size)
             <<P[i].wt<<"    "<<endl;
 }
 
-int main()
+int main(int argc, char const *argv[])
 {
     int N=0, timE=0, pid=0;
     double atat=0.0, awt=0.0;
-
-    cout<<"\n\nEnter number of process: ";
-    cin>>N;
-    Process P[N], temp;
-    //Input
-    for(int i=0; i<N; ++i)
+    if(argc != 2)
     {
-        cout<<"Enter arrival and burst time and priority for proceess with pid as "
-            <<i+1<<" :";
-        cin>>P[i].at>>P[i].bt>>P[i].priority;
-        P[i].rt = P[i].bt;
-        P[i].ct = P[i].tat = P[i].wt = 0;
+        cerr<<"Invalid argument.";
+        return 0;
+    }
+    if(*argv[1] == '1')
+    {
+        N = ;
+        fstream file("input.txt", ios::in);
+    }
+    else if(*argv[1] == '2')
+    {
+        cout<<"\n\nEnter number of process: ";
+        cin>>N;
+        Process P[N], temp;
+        //Input
+        for(int i=0; i<N; ++i)
+        {
+            cout<<"Enter arrival and burst time and priority for proceess with pid as "
+                <<i+1<<" :";
+            cin>>P[i].at>>P[i].bt>>P[i].priority;
+            P[i].rt = P[i].bt;
+            P[i].ct = P[i].tat = P[i].wt = 0;
+        }
+    }
+    else
+    {
+        cerr<<"Invalid argument. 2";
+        return 0;
     }
     //Processing
     //Sort according to arrival time
